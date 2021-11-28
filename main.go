@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "tri/cmd"
+import "github.com/jpoirier55/tri/cmd"
 
 func main() {
 	cmd.Execute()
