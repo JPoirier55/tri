@@ -17,12 +17,12 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"log"
 	"os"
-	"github.com/spf13/cobra"
 
-	"github.com/spf13/viper"
 	"github.com/mitchellh/go-homedir"
+	"github.com/spf13/viper"
 )
 
 var cfgFile string
@@ -56,10 +56,11 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	home, err := homedir.Dir()
+	fmt.Println(home)
 	if err != nil {
 		log.Println("Unable to detect home dir, set using --datafile ")
 	}
-	rootCmd.PersistentFlags().StringVar(&dataFile, home + string(os.PathSeparator) + ".tridos.json", "", "")
+	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", ".tridos.json", "datafile to store todos")
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tri.yaml)")
 

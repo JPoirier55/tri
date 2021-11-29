@@ -18,8 +18,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
-
 	"github.com/jpoirier55/tri/todo"
 	"github.com/spf13/cobra"
 )
@@ -29,33 +27,31 @@ var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add todo",
 	Long: `Add a new line of todo`,
-	Run: addNew,
+	Run: addRun,
 }
 
-func addNew (cmd *cobra.Command, args []string) {
-	var items []todo.Item
-	for _, x := range args {
-		items = append(items, todo.Item{Text: x})
-	}
-	err := todo.SaveItems( ".tridos.json", items)
-	if err != nil {
-		fmt.Errorf("%v", err)
-	}
-}
 
 func addRun (cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(".tridos.json")
+	items, err := todo.ReadItems(dataFile)
 	if err != nil {
-		log.Printf("%v", err)
+		fmt.Println(err.Error())
 	}
 	for _, x := range args {
-		items = append(items, todo.Item{Text: x})
+		item := todo.Item{Text: x}
+		item.SetPriority(priority)
+		items = append(items, item)
+	}
+	err2 := todo.SaveItems( dataFile, items)
+	if err2 != nil {
+		fmt.Println(err.Error())
 	}
 }
+
+var priority int
 
 func init() {
 	rootCmd.AddCommand(addCmd)
-
+	addCmd.Flags().IntVarP(&priority, "priority", "p", 2, "Priority: 1,2,3")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

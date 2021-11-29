@@ -1,6 +1,3 @@
-
-package cmd
-
 /*
 Copyright © 2021 NAME HERE <EMAIL ADDRESS>
 
@@ -16,47 +13,50 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+package cmd
 
 import (
 	"fmt"
 	"github.com/jpoirier55/tri/todo"
 	"log"
-	"os"
-	"text/tabwriter"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
 
-// listCmd represents the list command
-var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "show list",
-	Long: `list`,
-	Run: listRun,
+// doneCmd represents the done command
+var doneCmd = &cobra.Command{
+	Use:   "done",
+	Short: "donezo",
+	Long: `long donezo`,
+	Run: doneRun,
 }
 
-func listRun(cmd *cobra.Command, args []string) {
+func doneRun(cmd *cobra.Command, args []string) {
 	items, err := todo.ReadItems(dataFile)
+	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		log.Printf("%v", err)
+		log.Fatalln(args[0], "is not a valid label\n", err)
 	}
-	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
-	for _, i := range items {
-		fmt.Fprintln(w, i.Label() + "\t" + i.PrettyDone() + "\t" + i.PrettyP() + "\t" + i.Text + "\t")
+	if i > 0 && i < len(items) {
+		items[i-1].Done = true
+		fmt.Printf("%q %v\n", items[i-1].Text, "marked done")
+		todo.SaveItems(dataFile, items)
+	} else {
+		log.Println(i, "doesnt match anything")
 	}
-	w.Flush()
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(doneCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// doneCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// doneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
